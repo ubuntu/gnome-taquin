@@ -55,6 +55,7 @@ parts:
     organize:
       snap/gnome-taquin/current/usr: usr
     build-packages:
+     - appstream-util
      - gnome-pkg-tools
      - pkg-config
      - intltool
