@@ -30,6 +30,7 @@ apps:
       - desktop
       - desktop-legacy
       - gsettings
+      - pulseaudio
       - unity7
       - wayland
     desktop: usr/share/applications/org.gnome.taquin.desktop
