@@ -15,17 +15,17 @@ plugs:
     interface: content
     target: $SNAP/gnome-platform
     default-provider: gnome-3-26-1604
-  gtk3-themes:
+  gtk-3-themes:
     interface: content
-    target: $SNAP/usr/share/themes
+    target: $SNAP/data-dir/themes
     default-provider: gtk-common-themes
   icon-themes:
     interface: content
-    target: $SNAP/usr/share/icons
+    target: $SNAP/data-dir/icons
     default-provider: gtk-common-themes
   sound-themes:
     interface: content
-    target: $SNAP/usr/share/sounds
+    target: $SNAP/data-dir/sounds
     default-provider: gtk-common-themes
 
 slots:
@@ -56,14 +56,13 @@ parts:
     source: https://git.gnome.org/browse/gnome-taquin
     source-type: git
     source-tag: 3.22.0
-    prepare:
+    override-build: |
       sed -i.bak -e 's|=gnome-taquin$|=${SNAP}/meta/gui/gnome-taquin.png|g' data/org.gnome.taquin.desktop.in
-    install: |
+      snapcraftctl build
       mkdir -p $SNAPCRAFT_PART_INSTALL/meta/gui/
       cp ../src/data/icons/hicolor/256x256/gnome-taquin.png $SNAPCRAFT_PART_INSTALL/meta/gui/
       cp data/org.gnome.taquin.desktop $SNAPCRAFT_PART_INSTALL/meta/gui/
     plugin: autotools
-    # workaround the issue described in https://launchpad.net/bugs/1583250
     configflags: [--prefix=/snap/gnome-taquin/current/usr, --bindir=/snap/gnome-taquin/current/usr/games]
     organize:
       snap/gnome-taquin/current/usr: usr
