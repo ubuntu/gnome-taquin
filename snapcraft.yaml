@@ -1,0 +1,87 @@
+name: gnome-taquin
+version: 3.36.7
+summary: Slide tiles to their correct places
+description: |
+  Taquin is a computer version of the 15-puzzle and other sliding puzzles.
+
+  The object of Taquin is to move tiles so that they reach their places,
+  either indicated with numbers, or with parts of a great image.
+
+grade: stable # must be 'stable' to release into candidate/stable channels
+confinement: strict
+base: core18
+
+plugs:
+  gnome-3-28-1804:
+    interface: content
+    target: $SNAP/gnome-platform
+    default-provider: gnome-3-28-1804
+  gtk-3-themes:
+    interface: content
+    target: $SNAP/data-dir/themes
+    default-provider: gtk-common-themes
+  icon-themes:
+    interface: content
+    target: $SNAP/data-dir/icons
+    default-provider: gtk-common-themes
+
+slots:
+  # for GtkApplication registration
+  gnome-taquin:
+    interface: dbus
+    bus: session
+    name: org.gnome.taquin
+
+apps:
+  gnome-taquin:
+    command: desktop-launch gnome-taquin
+    plugs:
+      - desktop
+      - desktop-legacy
+      - gsettings
+      - unity7
+      - wayland
+    desktop: usr/share/applications/org.gnome.taquin.desktop
+    environment:
+      PATH: $SNAP/usr/games:$PATH
+
+parts:
+  desktop-gnome-platform:
+    source: https://github.com/ubuntu/snapcraft-desktop-helpers.git
+    source-subdir: gtk
+    plugin: make
+    make-parameters: ["FLAVOR=gtk3"]
+    build-packages:
+      - build-essential
+      - libgtk-3-dev
+    override-build: |
+      snapcraftctl build
+      mkdir -pv $SNAPCRAFT_PART_INSTALL/gnome-platform
+
+  gnome-taquin:
+    after: [desktop-gnome-platform]
+    source: https://gitlab.gnome.org/GNOME/gnome-taquin.git
+    source-type: git
+    source-branch: gnome-3-36
+    override-build: |
+      sed -i.bak -e 's|=gnome-taquin$|=${SNAP}/meta/gui/gnome-taquin.png|g' data/org.gnome.taquin.desktop.in
+      snapcraftctl build
+      mkdir -p $SNAPCRAFT_PART_INSTALL/meta/gui/
+      cp ../src/data/icons/hicolor/256x256/gnome-taquin.png $SNAPCRAFT_PART_INSTALL/meta/gui/
+      cp data/org.gnome.taquin.desktop $SNAPCRAFT_PART_INSTALL/meta/gui/
+    plugin: autotools
+    configflags: [--prefix=/snap/gnome-taquin/current/usr, --bindir=/snap/gnome-taquin/current/usr/games]
+    organize:
+      snap/gnome-taquin/current/usr: usr
+    build-packages:
+     - appstream-util
+     - gnome-pkg-tools
+     - pkg-config
+     - intltool
+     - libglib2.0-dev
+     - libgtk-3-dev
+     - librsvg2-dev
+     - libcanberra-gtk3-dev
+     - valac
+     - yelp-tools
+
