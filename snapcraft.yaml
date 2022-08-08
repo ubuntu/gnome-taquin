@@ -37,7 +37,6 @@ parts:
       craftctl default
       mkdir -p $CRAFT_PART_INSTALL/meta/gui/
       cp $CRAFT_PART_SRC/data/icons/hicolor/scalable/org.gnome.Taquin.svg $CRAFT_PART_INSTALL/meta/gui/
-      cp data/org.gnome.Taquin.desktop $CRAFT_PART_INSTALL/meta/gui/
     plugin: meson
     meson-parameters:
       - --prefix=/usr
