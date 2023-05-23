@@ -25,9 +25,11 @@ apps:
 
 parts:
   gnome-taquin:
+# ext:updatesnap
     source: https://gitlab.gnome.org/GNOME/gnome-taquin.git
     source-type: git
     source-tag: '3.38.1'
+    source-depth: 1
     parse-info: [usr/share/metainfo/org.gnome.Taquin.appdata.xml]
     override-pull: |
       craftctl default
